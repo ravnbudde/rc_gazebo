@@ -53,7 +53,7 @@ def generate_launch_description():
     """
 
     #Path til pakken
-    package_name = "gazebo_ackermann_steering_vehicle"
+    package_name = "rc_gazebo"
     package_path = get_package_share_directory(package_name)
 
     # Paths til Xacro og parametre
