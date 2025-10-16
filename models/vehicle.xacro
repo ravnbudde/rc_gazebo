@@ -389,7 +389,7 @@
       frame_id="imu"
       xyz_offset="0 0 0.006"
       rpy_offset="0 0 0"
-      update_rate="15.0"
+      update_rate="50.0"
       topic_name="imu/data"/>
 
     <xacro:lidar_sensor
