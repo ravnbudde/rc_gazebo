@@ -23,7 +23,7 @@
     <plugin name='gz::sim::systems::Imu' filename='gz-sim-imu-system'/>
     
     <include>
-      <uri>model://Maze</uri>
+      <uri>models://Maze</uri>
       <pose>0 0 0 0 0 0</pose> <!-- posisjon og rotasjon i verden -->
     </include>
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="rosmentor" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find rc_gazebo)/urdf/ack.xacro"/>
+    <xacro:include filename="$(find rc_gazebo)/urdf/inertial_matrix.xacro" />
+</robot>

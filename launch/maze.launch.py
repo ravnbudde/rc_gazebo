@@ -57,7 +57,7 @@ def generate_launch_description():
     package_path = get_package_share_directory(package_name)
 
     # Paths til Xacro og parametre
-    robot_xacro = os.path.join(package_path, 'models', 'vehicle.xacro')
+    robot_xacro = os.path.join(package_path, 'urdf', 'mentorpi.xacro')
     vehicle_params = os.path.join(package_path, 'config', 'parameters.yaml')
     robot_description = load_robot_description(robot_xacro, vehicle_params)
 
@@ -155,7 +155,7 @@ def generate_launch_description():
     joint_state, forward_velocity, forward_position = start_vehicle_controllers()
 
     vehicle_controller_node = Node(
-        package='gazebo_ackermann_steering_vehicle',
+        package='rc_gazebo',
         executable='vehicle_controller',
         parameters=[vehicle_params, {
             'timer_period': 0.01,          # 10 ms loop
