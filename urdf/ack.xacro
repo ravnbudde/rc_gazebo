@@ -17,7 +17,7 @@
         <mesh filename="models://acker/base_link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.3 0.3 0.3 1"/>
       </material>
     </visual>
     <collision>
@@ -51,7 +51,7 @@
         <mesh filename="models://acker/wheel_lf_Link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.2 0.2 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -80,7 +80,7 @@
         <mesh filename="models://acker/wheel_rf_Link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.2 0.2 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -109,7 +109,7 @@
         <mesh filename="models://acker/wheel_lb_Link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.2 0.2 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -138,7 +138,7 @@
         <mesh filename="models://acker/wheel_rb_Link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.2 0.2 0.2 1"/>
       </material>
     </visual>
     <collision>
@@ -167,7 +167,7 @@
         <mesh filename="models://acker/lidar_Link.STL"/>
       </geometry>
       <material name="">
-        <color rgba="1 1 1 1"/>
+        <color rgba="0.1 0.1 0.1 1"/>
       </material>
     </visual>
     <collision>
