@@ -18,7 +18,7 @@ add_executable(vehicle_controller src/vehicle_controller.cpp)
 ament_target_dependencies(vehicle_controller rclcpp std_msgs)
 
 install(
-  DIRECTORY launch models urdf config sensors worlds
+  DIRECTORY launch models urdf config worlds
   DESTINATION share/${PROJECT_NAME}
 )
 
