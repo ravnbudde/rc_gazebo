@@ -6,39 +6,16 @@ VehicleController::VehicleController(const double timer_period, const double tim
   timeout_duration_{timeout_duration},
   last_velocity_time_{get_clock()->now()},
   last_steering_time_{get_clock()->now()},
-  body_width_{0.0},
-  body_length_{0.0},
-  wheel_radius_{0.0},
-  wheel_width_{0.0},
-  max_steering_angle_{0.0},
-  max_velocity_{0.0},
-  wheel_base_{0.0},
-  track_width_{0.0},
+  wheel_radius_{0.067/2},
+  max_steering_angle_{0.5},
+  max_velocity_{0.6},
+  wheel_base_{0.145},
+  track_width_{0.133},
   steering_angle_{0.0},
   velocity_{0.0},
   wheel_angular_velocity_{0.0, 0.0},
   wheel_steering_angle_{0.0, 0.0}
 {
-  // Declare the used parameters
-  declare_parameter<double>("body_width", 0.0);
-  declare_parameter<double>("body_length", 0.0);
-  declare_parameter<double>("wheel_radius", 0.0);
-  declare_parameter<double>("wheel_width", 0.0);
-  declare_parameter<double>("max_steering_angle", 0.0);
-  declare_parameter<double>("max_velocity", 0.0);
-
-  // Get parameters on startup
-  get_parameter("body_width", body_width_);
-  get_parameter("body_length", body_length_);
-  get_parameter("wheel_radius", wheel_radius_);
-  get_parameter("wheel_width", wheel_width_);
-  get_parameter("max_steering_angle", max_steering_angle_);
-  get_parameter("max_velocity", max_velocity_);
-
-  // Set the track width and wheel base
-  track_width_ = body_width_ + (2 * wheel_width_ / 2);
-  wheel_base_ = body_length_ - (2 * wheel_radius_);
-
   // Subscribers
   steering_angle_subscriber_ = create_subscription<std_msgs::msg::Float64>(
     "/steering_angle", 10,

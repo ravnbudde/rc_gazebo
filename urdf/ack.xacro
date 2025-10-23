@@ -1,10 +1,18 @@
 <?xml version="1.0" ?>
 <robot name="ack" xmlns:xacro="http://ros.org/wiki/xacro">
-    <!-- 瀹氫箟榛戣壊鏉愯川 -->
+  
+  <!-- Parameters -->
+   <xacro:property name="M_PI" value="3.14159265359"/>
+
+   <xacro:property name="max_steering_angle" value="0.5"/> <!-- 28.65 grader -->
+   <xacro:property name="max_velocity" value="0.6"/>
+   <xacro:property name="max_wheel_angular_velocity" value="${2 * max_velocity/0.067}"/> <!-- Wheel diameter = 0.067 -->
+
+
   <material name="black">
     <color rgba="0 0 0 1"/>
   </material>
-  <!-- 瀹氫箟 base_link -->
+  <!-- base_link -->
   <link name="base_link">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.00186669751054189 3.0253386351986E-05 -0.00605296088229322"/>
@@ -28,17 +36,17 @@
     </collision>
   </link>
 
-  <!-- 娣诲姞 base_footprint 閾炬帴 -->
+  <!-- base_footprint -->
   <link name="base_footprint"/>
 
-  <!-- 瀹氫箟 base_footprint 鍒?base_link 鐨勫浐瀹氬叧鑺?-->
+  <!-- base_footprint to base_link -->
   <joint name="base_footprint_to_base_link" type="fixed">
     <parent link="base_footprint"/>
     <child link="base_link"/>
     <origin xyz="0 0 0.07" rpy="0 0 0"/>
   </joint>
 
-  <!-- 瀹氫箟鍏朵粬閾炬帴鍜屽叧鑺?-->
+  <!-- Wheel links-->
   <link name="wheel_lf_Link">
     <inertial>
       <origin rpy="0 0 0" xyz="1.65897579444685E-06 -0.00270913022688685 -1.5546673051009E-06"/>
@@ -65,7 +73,7 @@
     <origin rpy="0 0 0" xyz="0.06679 0.069739 -0.0288"/>
     <parent link="base_link"/>
     <child link="wheel_lf_Link"/>
-    <axis xyz="-2.2918E-05 1 1.9551E-05"/>
+    <axis xyz="-2.2918E-05 1.9551E-05 1"/>
   </joint>
 
   <link name="wheel_rf_Link">
@@ -94,7 +102,7 @@
     <origin rpy="0 0 0" xyz="0.066794 -0.069739 -0.028803"/>
     <parent link="base_link"/>
     <child link="wheel_rf_Link"/>
-    <axis xyz="-2.2918E-05 1 1.9551E-05"/>
+    <axis xyz="-2.2918E-05 1.9551E-05 1"/>
   </joint>
 
   <link name="wheel_lb_Link">
@@ -184,4 +192,71 @@
     <axis xyz="0 0 0"/>
   </joint>
   <xacro:include filename="$(find rc_gazebo)/urdf/imu.urdf.xacro"/>
+
+
+  <!-- Gazebo Control -->
+  <ros2_control name="ack_control" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+
+    <!-- Front wheels (steering joints) -->
+    <joint name="wheel_lf_Joint">
+      <command_interface name="position">
+        <param name="min">${-max_steering_angle}</param>
+        <param name="max">${max_steering_angle}</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="wheel_rf_Joint">
+      <command_interface name="position">
+        <param name="min">${-max_steering_angle}</param>
+        <param name="max">${max_steering_angle}</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <!-- Rear wheels (drive joints) -->
+    <joint name="wheel_lb_Joint">
+      <command_interface name="velocity">
+        <param name="min">${-max_wheel_angular_velocity}</param>
+        <param name="max">${max_wheel_angular_velocity}</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="wheel_rb_Joint">
+      <command_interface name="velocity">
+        <param name="min">${-max_wheel_angular_velocity}</param>
+        <param name="max">${max_wheel_angular_velocity}</param>
+      </command_interface>
+
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+      <topic>joint_states</topic>
+      <joint_name>wheel_lf_Joint</joint_name>
+      <joint_name>wheel_rf_Joint</joint_name>
+      <joint_name>wheel_lb_Joint</joint_name>
+      <joint_name>wheel_rb_Joint</joint_name>
+    </plugin>
+
+    <plugin filename="gz_ros2_control-system"
+            name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find rc_gazebo)/config/gz_ros2_control.yaml</parameters>
+    </plugin>
+  </gazebo>
+
 </robot>
