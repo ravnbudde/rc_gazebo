@@ -28,9 +28,9 @@
   gz_type_name: "gz.msgs.IMU"
   direction: "GZ_TO_ROS"
 
-# IMU
-- ros_topic_name: "/lidar/data"
-  gz_topic_name: "/lidar/data"
+# Lidar
+- ros_topic_name: "/sensors/lidar/raw"
+  gz_topic_name: "/sensors/lidar/raw"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: "GZ_TO_ROS"

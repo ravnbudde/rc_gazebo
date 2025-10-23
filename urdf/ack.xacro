@@ -163,6 +163,12 @@
     <axis xyz="-2.2787E-05 1 1.9439E-05"/>
   </joint>
 
+  <joint name="lidar_Joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.0096019 -8.533E-05 0.092501"/>
+    <parent link="base_link"/>
+    <child link="lidar_frame"/>
+    <axis xyz="0 0 0"/>
+  </joint>
   <link name="lidar_frame">
     <inertial>
       <origin rpy="0 0 0" xyz="8.65086433231368E-05 9.02624784523964E-05 -0.0183546134614858"/>
@@ -185,12 +191,8 @@
       </geometry>
     </collision>
   </link>
-  <joint name="lidar_Joint" type="fixed">
-    <origin rpy="0 0 0" xyz="-0.0096019 -8.533E-05 0.092501"/>
-    <parent link="base_link"/>
-    <child link="lidar_frame"/>
-    <axis xyz="0 0 0"/>
-  </joint>
+
+
   <xacro:include filename="$(find rc_gazebo)/urdf/imu.urdf.xacro"/>
 
 
@@ -257,6 +259,45 @@
             name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find rc_gazebo)/config/gz_ros2_control.yaml</parameters>
     </plugin>
+  </gazebo>
+
+
+  <!-- Sensorer -->
+  <!-- <gazebo>
+    <plugin name='gz::sim::systems::Sensors' filename='gz-sim-sensors-system'>
+      <render_engine>ogre2</render_engine>
+    </plugin>
+  </gazebo> -->
+
+  <gazebo reference="lidar_frame">
+    <sensor name="lidar_sensor" type="gpu_lidar">
+      <always_on>true</always_on>
+      <update_rate>10</update_rate>
+      <visualize>true</visualize>
+      <topic>/sensors/lidar/raw</topic>
+      <enable_metrics>false</enable_metrics>
+      <pose relative_to="lidar_frame"> 0 0 0 0 0 3.14159265359 </pose>
+      <lidar>
+        <scan>
+          <horizontal>
+            <samples>450</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159265359</min_angle>
+            <max_angle>3.14159265359</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.05</min>
+          <max>20</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0</mean>
+          <stddev>0</stddev>
+        </noise>
+      </lidar>
+    </sensor>
   </gazebo>
 
 </robot>
