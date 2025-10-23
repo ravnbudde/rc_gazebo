@@ -2,6 +2,7 @@
 <robot name="ack" xmlns:xacro="http://ros.org/wiki/xacro">
   
   <xacro:include filename="$(find rc_gazebo)/urdf/lidar.xacro" />
+  <xacro:include filename="$(find rc_gazebo)/urdf/imu.xacro" />
 
   <!-- Parameters -->
    <xacro:property name="M_PI" value="3.14159265359"/>
@@ -166,9 +167,6 @@
   </joint>
 
 
-  <xacro:include filename="$(find rc_gazebo)/urdf/imu.urdf.xacro"/>
-
-
   <!-- Gazebo Control -->
   <ros2_control name="ack_control" type="system">
     <hardware>
@@ -237,6 +235,7 @@
 
   <!-- Sensorer -->
   <xacro:lidar_sensor></xacro:lidar_sensor>
+  <xacro:imu_sensor></xacro:imu_sensor>
 
   
 
