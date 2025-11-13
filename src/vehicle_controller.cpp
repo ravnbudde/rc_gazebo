@@ -157,6 +157,12 @@ void VehicleController::timer_callback()
   odom.pose.pose.orientation = tf2::toMsg(q);
   odom.twist.twist.linear.x = velocity_;
   odom.twist.twist.angular.z = yaw_rate_;
+  odom.pose.covariance[0] = 0.1;   // x
+  odom.pose.covariance[7] = 0.1;   // y
+  odom.pose.covariance[35] = 0.05; // yaw
+  odom.twist.covariance[0] = 0.2;  // vx
+  odom.twist.covariance[7] = 0.2;  // vy
+  odom.twist.covariance[35] = 0.1; // yaw rate
 
   odom_publisher_->publish(odom);
 

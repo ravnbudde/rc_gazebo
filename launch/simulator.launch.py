@@ -113,6 +113,7 @@ def generate_launch_description():
         executable='vehicle_controller',
         parameters=[{
             'timer_period': 0.01,          # 100 Hz controller loop
+            'use_sim_time': True,
         }],
         output='screen'
     )
