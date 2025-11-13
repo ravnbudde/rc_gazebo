@@ -31,7 +31,7 @@ VehicleController::VehicleController(const double timer_period) :
   velocity_publisher_ = create_publisher<std_msgs::msg::Float64MultiArray>(
     "/forward_velocity_controller/commands", 10);
 
-  odom_publisher_ = create_publisher<nav_msgs::msg::Odometry>("odom", 10);
+  odom_publisher_ = create_publisher<nav_msgs::msg::Odometry>("/odom_raw", 10);
 
   // Broadcasters
   tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
