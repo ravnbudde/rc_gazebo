@@ -13,6 +13,7 @@
   <depend>std_msgs</depend>
   <depend>ros_gz_sim</depend>
   <depend>sensor_msgs/msg/Imu</depend>
+  <depend>navnav_msgs/msg/Odometry</depend>
 
   <exec_depend>joint_state_publisher</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>

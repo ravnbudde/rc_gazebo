@@ -1,9 +1,9 @@
 #include "vehicle_controller.hpp"
 #include <iostream>
 
-VehicleController::VehicleController(const double timer_period, const double timeout_duration) :
+VehicleController::VehicleController(const double timer_period) :
   Node{"vehicle_controller"},
-  timeout_duration_{timeout_duration},
+  last_odom_time_{get_clock()->now()},
   last_velocity_time_{get_clock()->now()},
   last_steering_time_{get_clock()->now()},
   wheel_radius_{0.067/2},
@@ -30,6 +30,11 @@ VehicleController::VehicleController(const double timer_period, const double tim
 
   velocity_publisher_ = create_publisher<std_msgs::msg::Float64MultiArray>(
     "/forward_velocity_controller/commands", 10);
+
+  odom_publisher_ = create_publisher<nav_msgs::msg::Odometry>("odom", 10);
+
+  // Broadcasters
+  tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
   // Timer loop
   timer_ = create_wall_timer(std::chrono::duration<double>(timer_period),
@@ -106,29 +111,25 @@ std::pair<double, double> VehicleController::rear_differential_velocity()
   return std::make_pair(left_wheel_velocity, right_wheel_velocity);
 }
 
+void VehicleController::update_odometry(double dt){
+  double v = velocity_;
+  yaw_rate_ = 0.0;
+  if (std::abs(steering_angle_) > 1e-3) {
+    double radius = wheel_base_ / std::tan(steering_angle_);
+    yaw_rate_ = v / radius;
+  }
+
+  x_ += v * std::cos(yaw_) * dt;
+  y_ += v * std::sin(yaw_) * dt;
+  yaw_ += yaw_rate_ * dt;
+}
+
 void VehicleController::timer_callback()
 {
   const auto current_time{get_clock()->now()};
+  // const auto odom_elapsed_time{(current_time - last_odom_time_).nanoseconds()};
   const auto velocity_elapsed_time{(current_time - last_velocity_time_).nanoseconds()};
   const auto steering_elapsed_time{(current_time - last_steering_time_).nanoseconds()};
-
-  // std::cout << "[Timer] wheel_velocity=[" 
-  //         << wheel_angular_velocity_[0] << ", " 
-  //         << wheel_angular_velocity_[1] << "], "
-  //         << "wheel_steering=[" 
-  //         << wheel_steering_angle_[0] << ", " 
-  //         << wheel_steering_angle_[1] << "]"
-  //         << std::endl;
-
-  // Reset velocity to zero if timeout
-  if (velocity_elapsed_time > timeout_duration_) {
-    wheel_angular_velocity_ = {0.0, 0.0};
-  }
-
-  // Reset steering angle to zero if timeout
-  if (steering_elapsed_time > timeout_duration_) {
-    wheel_steering_angle_ = {0.0, 0.0};
-  }
 
   // Publish steering position
   std_msgs::msg::Float64MultiArray position_msg;
@@ -139,6 +140,37 @@ void VehicleController::timer_callback()
   std_msgs::msg::Float64MultiArray velocity_msg;
   velocity_msg.data = wheel_angular_velocity_;
   velocity_publisher_->publish(velocity_msg);
+
+  // Odometry
+  double dt = (current_time - last_odom_time_).seconds();
+  last_odom_time_ = current_time;
+  this->update_odometry(dt);
+
+  nav_msgs::msg::Odometry odom;
+  odom.header.stamp = current_time;
+  odom.header.frame_id = "odom";
+  odom.child_frame_id = "base_link";
+  odom.pose.pose.position.x = x_;
+  odom.pose.pose.position.y = y_;
+  tf2::Quaternion q;
+  q.setRPY(0.0, 0.0, yaw_);
+  odom.pose.pose.orientation = tf2::toMsg(q);
+  odom.twist.twist.linear.x = velocity_;
+  odom.twist.twist.angular.z = yaw_rate_;
+
+  odom_publisher_->publish(odom);
+
+  // TF
+  geometry_msgs::msg::TransformStamped tf_msg;
+  tf_msg.header.stamp = current_time;
+  tf_msg.header.frame_id = "odom";
+  tf_msg.child_frame_id = "base_link";
+  tf_msg.transform.translation.x = x_;
+  tf_msg.transform.translation.y = y_;
+  tf_msg.transform.translation.z = 0.0;
+  tf_msg.transform.rotation = tf2::toMsg(q);
+
+  tf_broadcaster_->sendTransform(tf_msg);
 }
 
 void VehicleController::steering_angle_callback(const std_msgs::msg::Float64::SharedPtr msg)

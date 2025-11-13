@@ -112,8 +112,7 @@ def generate_launch_description():
         package='rc_gazebo',
         executable='vehicle_controller',
         parameters=[{
-            'timer_period': 0.01,          # 10 ms loop
-            'timeout_duration': 0.01        # 10 ms timeout
+            'timer_period': 0.01,          # 100 Hz controller loop
         }],
         output='screen'
     )

@@ -4,12 +4,18 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
+#include "nav_msgs/msg/odometry.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2_ros/transform_broadcaster.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
+#include "geometry_msgs/msg/transform_stamped.hpp"
+
 
 class VehicleController : public rclcpp::Node
 {
 
 public:
-  VehicleController(const double timer_period = 1e-2, const double timeout_duration = 1e9);
+  VehicleController(const double timer_period = 1e-2);
 
 private:
   /**
@@ -73,7 +79,9 @@ private:
    */
   void velocity_callback(const std_msgs::msg::Float64::SharedPtr msg);
 
-  double timeout_duration_;
+  void update_odometry(double dt);
+
+  rclcpp::Time last_odom_time_;
   rclcpp::Time last_velocity_time_;
   rclcpp::Time last_steering_time_;
 
@@ -86,8 +94,13 @@ private:
   double wheel_base_;
   double track_width_;
 
+  double x_;
+  double y_;
+  double yaw_;
+
   double steering_angle_;
   double velocity_;
+  double yaw_rate_;
 
   std::vector<double> wheel_angular_velocity_;
   std::vector<double> wheel_steering_angle_;
@@ -96,6 +109,8 @@ private:
   rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr velocity_subscriber_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr position_publisher_;
   rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr velocity_publisher_;
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_publisher_;
+  std::shared_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
   rclcpp::TimerBase::SharedPtr timer_;
 };
 
