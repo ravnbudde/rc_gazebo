@@ -34,7 +34,7 @@ VehicleController::VehicleController(const double timer_period) :
   odom_publisher_ = create_publisher<nav_msgs::msg::Odometry>("/odom_raw", 10);
 
   // Broadcasters
-  tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
+  // tf_broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
   // Timer loop
   timer_ = create_wall_timer(std::chrono::duration<double>(timer_period),
@@ -166,17 +166,17 @@ void VehicleController::timer_callback()
 
   odom_publisher_->publish(odom);
 
-  // TF
-  geometry_msgs::msg::TransformStamped tf_msg;
-  tf_msg.header.stamp = current_time;
-  tf_msg.header.frame_id = "odom";
-  tf_msg.child_frame_id = "base_link";
-  tf_msg.transform.translation.x = x_;
-  tf_msg.transform.translation.y = y_;
-  tf_msg.transform.translation.z = 0.0;
-  tf_msg.transform.rotation = tf2::toMsg(q);
+  // // TF
+  // geometry_msgs::msg::TransformStamped tf_msg;
+  // tf_msg.header.stamp = current_time;
+  // tf_msg.header.frame_id = "odom";
+  // tf_msg.child_frame_id = "base_link";
+  // tf_msg.transform.translation.x = x_;
+  // tf_msg.transform.translation.y = y_;
+  // tf_msg.transform.translation.z = 0.0;
+  // tf_msg.transform.rotation = tf2::toMsg(q);
 
-  tf_broadcaster_->sendTransform(tf_msg);
+  // tf_broadcaster_->sendTransform(tf_msg);
 }
 
 void VehicleController::steering_angle_callback(const std_msgs::msg::Float64::SharedPtr msg)

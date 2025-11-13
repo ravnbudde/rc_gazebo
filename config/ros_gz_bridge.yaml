@@ -29,8 +29,8 @@
   direction: "GZ_TO_ROS"
 
 # Lidar
-- ros_topic_name: "/sensors/lidar/raw"
-  gz_topic_name: "/sensors/lidar/raw"
+- ros_topic_name: "/sensors/lidar/scan_raw"
+  gz_topic_name: "/sensors/lidar/scan_raw"
   ros_type_name: "sensor_msgs/msg/LaserScan"
   gz_type_name: "gz.msgs.LaserScan"
   direction: "GZ_TO_ROS"

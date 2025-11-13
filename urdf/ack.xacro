@@ -39,16 +39,6 @@
     </collision>
   </link>
 
-  <!-- base_footprint -->
-  <link name="base_footprint"/>
-
-  <!-- base_footprint to base_link -->
-  <joint name="base_footprint_to_base_link" type="fixed">
-    <parent link="base_footprint"/>
-    <child link="base_link"/>
-    <origin xyz="0 0 0.07" rpy="0 0 0"/>
-  </joint>
-
   <!-- Wheel links-->
   <link name="wheel_lf_Link">
     <inertial>

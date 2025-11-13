@@ -7,10 +7,10 @@
         <joint name="lidar_Joint" type="fixed">
             <origin rpy="0 0 0" xyz="-0.0096019 -8.533E-05 0.092501"/>
             <parent link="base_link"/>
-            <child link="lidar_frame"/>
+            <child link="lidar_link"/>
             <axis xyz="0 0 0"/>
         </joint>
-        <link name="lidar_frame">
+        <link name="lidar_link">
             <inertial>
                 <origin rpy="0 0 0" xyz="8.65086433231368E-05 9.02624784523964E-05 -0.0183546134614858"/>
                 <mass value="0.0405423044068563"/>
@@ -35,14 +35,15 @@
 
         
         <!-- Faktiske sensoren -->
-        <gazebo reference="lidar_frame">
+        <gazebo reference="lidar_link">
             <sensor name="lidar_sensor" type="gpu_lidar">
+                <gz_frame_id>lidar_link</gz_frame_id>
                 <always_on>true</always_on>
                 <update_rate>10</update_rate>
                 <visualize>true</visualize>
                 <topic>/sensors/lidar/scan_raw</topic>
                 <enable_metrics>false</enable_metrics>
-                <pose relative_to="lidar_frame"> 0 0 0 0 0 3.14159265359 </pose>
+                <pose relative_to="lidar_link"> 0 0 0 0 0 3.14159265359 </pose>
                 <lidar>
                     <scan>
                         <horizontal>
